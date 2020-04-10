@@ -12,15 +12,16 @@ const ShowSchema = new Schema(
       type: String,
       required: "Show name cannot be blank",
     },
-    cover: {
+    poster: {
       type: String,
     },
     overview: {
       type: String,
     },
-    genres: [{ type: Schema.Types.ObjectId, ref: 'Genre' }]
+    genres: [{ type: Schema.Types.ObjectId, ref: 'Genre' }],
+    characters: [{ type: Schema.Types.ObjectId, ref: 'Character'}]
   },
-  { collection: "Show" }
+  { collection: "show" }
 );
 
 const Show = mongoose.model("Show", ShowSchema);
