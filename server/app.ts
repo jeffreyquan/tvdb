@@ -13,7 +13,7 @@ app.use(express.json());
 app.use(cors());
 app.use(express.urlencoded({ extended: true }));
 
-app.use('/shows', showRouter);
+app.use('/api/shows', showRouter);
 
 mongoose.Promise = global.Promise;
 
