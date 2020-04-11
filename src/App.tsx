@@ -5,14 +5,15 @@ import {
   Route,
   Link
 } from 'react-router-dom';
-import Search from './components/Search';
+// import Search from './components/Search';
+import { ShowSearchForm } from './components/ShowSearchForm';
 
 function App() {
   return (
     <Router>
       <Switch>
         <Route path="/">
-          <Search />
+          <ShowSearchForm />
         </Route>
       </Switch>
     </Router>
