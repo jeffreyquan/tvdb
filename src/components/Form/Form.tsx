@@ -1,10 +1,11 @@
 import React, { useState } from "react";
+import axios from 'axios';
 
 export interface IFormContext extends IFormState {
   setValues: (values: IValues) => void
 }
 
-export const FormContext = React.createContext<IFormContext| any>(undefined);
+export const FormContext = React.createContext<IFormContext | any>(undefined);
 
 interface IFormProps {
   action: string;
@@ -54,8 +55,20 @@ export const Form: React.FC<IFormProps> = ({ action, render }) => {
     return true;
   }
 
-  const submitForm = () => {
-    return true;
+  const submitForm = (): boolean => {
+      axios.get(action, {
+       params: {
+         values: state.values
+       }
+      })
+      .then((res) => {
+        console.log(res);
+        return true;
+      })
+      .catch((err) => {
+        return false;
+      })
+      return false;
   }
 
   const handleSubmit = async(e: React.FormEvent<HTMLFormElement>): Promise<void> => {
@@ -63,13 +76,15 @@ export const Form: React.FC<IFormProps> = ({ action, render }) => {
 
     console.log(state.values);
 
-    if (validateForm()) {
-      const submitSuccess: boolean = await submitForm();
-      setState({
-        ...state,
-        submitSuccess
-      });
-    }
+    submitForm();
+
+    // if (validateForm()) {
+    //   const submitSuccess: boolean = submitForm();
+    //   setState({
+    //     ...state,
+    //     submitSuccess
+    //   });
+    // }
   }
 
   const context: IFormContext = {

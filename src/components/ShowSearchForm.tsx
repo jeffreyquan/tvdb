@@ -5,12 +5,12 @@ import { Field } from './Form/Field';
 export const ShowSearchForm: React.FC = () => {
   return (
     <Form
-      action="#"
+      action="http://localhost:5000/shows/search"
       render={() => (
         <>
           <Field id="name" label="Name" />
         </>
       )}
     />
-  )
+  );
 }
