@@ -24,14 +24,16 @@ export interface IFormState {
   values: IValues;
   errors: IErrors;
   submitSuccess?: boolean;
+  data?: any
 }
 
 export const Form: React.FC<IFormProps> = ({ action, render }) => {
 
   const errors: IErrors = {};
   const values: IValues = {};
+  const data = {};
 
-  const [state, setState] = useState<IFormState>({ errors, values });
+  const [state, setState] = useState<IFormState>({ errors, values, data });
 
   const haveErrors = (errors: IErrors): boolean => {
     let haveError: boolean = false;
@@ -47,6 +49,9 @@ export const Form: React.FC<IFormProps> = ({ action, render }) => {
       },
       errors: {
         ...state.errors
+      },
+      data: {
+        ...state.data
       }
     })
   }
@@ -55,20 +60,26 @@ export const Form: React.FC<IFormProps> = ({ action, render }) => {
     return true;
   }
 
-  const submitForm = (): boolean => {
+  const submitForm = () => {
       axios.get(action, {
        params: {
          values: state.values
        }
       })
       .then((res) => {
-        console.log(res);
-        return true;
+        setState({
+          values: {
+            ...state.values
+          },
+          errors: {
+             ...state.errors,
+          },
+          data: res.data
+        })
       })
       .catch((err) => {
-        return false;
+        console.log(err);
       })
-      return false;
   }
 
   const handleSubmit = async(e: React.FormEvent<HTMLFormElement>): Promise<void> => {
