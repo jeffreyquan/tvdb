@@ -1,11 +1,18 @@
 import React, { useState } from "react";
 import axios from 'axios';
+import { Results } from "./Results";
 
 export interface IFormContext extends IFormState {
   setValues: (values: IValues) => void
 }
 
 export const FormContext = React.createContext<IFormContext | any>(undefined);
+
+export interface IResultsContext extends IResultsState {
+
+}
+
+export const ResultsContext = React.createContext<IResultsContext | any>(undefined);
 
 interface IFormProps {
   action: string;
@@ -20,20 +27,29 @@ export interface IErrors {
   [key: string]: string;
 }
 
+export interface IResults {
+  [key: string]: any;
+}
+
+export interface IResultsState {
+  results: IResults
+}
+
 export interface IFormState {
   values: IValues;
   errors: IErrors;
   submitSuccess?: boolean;
-  data?: any
 }
 
 export const Form: React.FC<IFormProps> = ({ action, render }) => {
 
   const errors: IErrors = {};
   const values: IValues = {};
-  const data = {};
+  const data: IResults = {};
 
-  const [state, setState] = useState<IFormState>({ errors, values, data });
+  const [state, setState] = useState<IFormState>({ errors, values });
+
+  const [results, setResults] = useState<IResultsState>({ results: data });
 
   const haveErrors = (errors: IErrors): boolean => {
     let haveError: boolean = false;
@@ -50,9 +66,6 @@ export const Form: React.FC<IFormProps> = ({ action, render }) => {
       errors: {
         ...state.errors
       },
-      data: {
-        ...state.data
-      }
     })
   }
 
@@ -67,14 +80,8 @@ export const Form: React.FC<IFormProps> = ({ action, render }) => {
        }
       })
       .then((res) => {
-        setState({
-          values: {
-            ...state.values
-          },
-          errors: {
-             ...state.errors,
-          },
-          data: res.data
+        setResults({
+          results: res.data
         })
       })
       .catch((err) => {
@@ -103,14 +110,23 @@ export const Form: React.FC<IFormProps> = ({ action, render }) => {
     setValues: setValues,
   };
 
+  const resultsContext: IResultsContext = {
+    ...results
+  }
+
   return (
-    <FormContext.Provider value={context}>
-      <form onSubmit={handleSubmit}>
-        <div>{render()}</div>
-        <button type="submit" disabled={haveErrors(errors)}>
-          Submit
-        </button>
-      </form>
-    </FormContext.Provider>
+    <>
+      <FormContext.Provider value={context}>
+        <form onSubmit={handleSubmit}>
+          <div>{render()}</div>
+          <button type="submit" disabled={haveErrors(errors)}>
+            Submit
+          </button>
+        </form>
+      </FormContext.Provider>
+      <ResultsContext.Provider value={resultsContext}>
+        <Results />
+      </ResultsContext.Provider>
+    </>
   );
 }
