@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import axios from 'axios';
-import { Results } from "./Results";
 
 export interface IFormContext extends IFormState {
   setValues: (values: IValues) => void
@@ -8,15 +7,16 @@ export interface IFormContext extends IFormState {
 
 export const FormContext = React.createContext<IFormContext | any>(undefined);
 
-export interface IResultsContext extends IResultsState {
+export interface IResponseContext extends IResponseState {
 
 }
 
-export const ResultsContext = React.createContext<IResultsContext | any>(undefined);
+export const ResponseContext = React.createContext<IResponseContext | any>(undefined);
 
 interface IFormProps {
   action: string;
   render: () => React.ReactNode;
+  renderResponse?: () => React.ReactNode;
 }
 
 export interface IValues {
@@ -27,12 +27,12 @@ export interface IErrors {
   [key: string]: string;
 }
 
-export interface IResults {
+export interface IResponse {
   [key: string]: any;
 }
 
-export interface IResultsState {
-  results: IResults
+export interface IResponseState {
+  response: IResponse
 }
 
 export interface IFormState {
@@ -41,15 +41,15 @@ export interface IFormState {
   submitSuccess?: boolean;
 }
 
-export const Form: React.FC<IFormProps> = ({ action, render }) => {
+export const Form: React.FC<IFormProps> = ({ action, render, renderResponse }) => {
 
   const errors: IErrors = {};
   const values: IValues = {};
-  const data: IResults = {};
+  const initialResponse: IResponse = {};
 
   const [state, setState] = useState<IFormState>({ errors, values });
 
-  const [results, setResults] = useState<IResultsState>({ results: data });
+  const [response, setResponse] = useState<IResponseState>({ response: initialResponse });
 
   const haveErrors = (errors: IErrors): boolean => {
     let haveError: boolean = false;
@@ -80,8 +80,8 @@ export const Form: React.FC<IFormProps> = ({ action, render }) => {
        }
       })
       .then((res) => {
-        setResults({
-          results: res.data
+        setResponse({
+          response: res.data
         })
       })
       .catch((err) => {
@@ -110,9 +110,7 @@ export const Form: React.FC<IFormProps> = ({ action, render }) => {
     setValues: setValues,
   };
 
-  const resultsContext: IResultsContext = {
-    ...results
-  }
+  const responseContext: IResponseContext = response;
 
   return (
     <>
@@ -123,10 +121,16 @@ export const Form: React.FC<IFormProps> = ({ action, render }) => {
             Submit
           </button>
         </form>
+        <ResponseContext.Provider
+          value={responseContext}
+        >
+          {renderResponse ?
+            (<div>{renderResponse()}</div>)
+            :
+            ''
+          }
+        </ResponseContext.Provider>
       </FormContext.Provider>
-      <ResultsContext.Provider value={resultsContext}>
-        <Results />
-      </ResultsContext.Provider>
     </>
   );
 }
