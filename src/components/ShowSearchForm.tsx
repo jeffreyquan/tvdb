@@ -1,6 +1,7 @@
 import React from 'react';
 import { Form } from './Form/Form';
 import { Field } from './Form/Field';
+import { ShowSearchResults } from './ShowSearchResults';
 
 export const ShowSearchForm: React.FC = () => {
   return (
@@ -11,6 +12,7 @@ export const ShowSearchForm: React.FC = () => {
           <Field id="name" label="Name" />
         </>
       )}
+      renderResponse={() => <ShowSearchResults />}
     />
   );
 }

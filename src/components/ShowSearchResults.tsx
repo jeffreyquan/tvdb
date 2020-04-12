@@ -1,13 +1,16 @@
-import React, { useContext } from 'react';
-import { FormContext } from './Form/Form';
-
+import React from 'react';
+import { ResponseContext, IResponseContext } from './Form/Form';
 
 export const ShowSearchResults = () => {
-  const results = useContext(FormContext);
-  console.log(results);
+  
   return (
-    <div>
-      Hello
-    </div>
-  )
+    <ResponseContext.Consumer>
+      {(context: IResponseContext) =>
+        Object.keys(context.response).length > 0 &&
+        context.response.results.map((result: any, index: number) => (
+          <div key={index}>{result.original_name}</div>
+        ))
+      }
+    </ResponseContext.Consumer>
+  );
 }
