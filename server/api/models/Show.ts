@@ -18,6 +18,9 @@ const ShowSchema = new Schema(
     overview: {
       type: String,
     },
+    firstAirDate: {
+      type: String
+    },
     genres: [{ type: Schema.Types.ObjectId, ref: 'Genre' }],
     characters: [{ type: Schema.Types.ObjectId, ref: 'Character'}]
   },
