@@ -25,7 +25,7 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "server:dev": "nodemon --watch 'server/**/*.ts' --exec ts-node --project ./server/tsconfig.json ./server/app.ts",
+    "server:dev": "nodemon --watch server --exec ts-node --project ./server/tsconfig.json ./server/app.ts",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
