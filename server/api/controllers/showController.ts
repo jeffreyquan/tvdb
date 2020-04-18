@@ -1,5 +1,6 @@
 import Show from '../models/Show';
 import axios, { AxiosResponse, AxiosError } from 'axios';
+import Genre, { IGenre } from '../models/Genre';
 
 export const listSearchResults = async (req, res) => {
   let query = JSON.parse(req.query.values).name;
@@ -12,8 +13,8 @@ export const listSearchResults = async (req, res) => {
     const updateShows = async() => {
       return Promise.all(
         response.data.results.map(show => {
-        let id = show["id"];
-        return Show.findOne({ id });
+        let tmdbId = show["id"];
+        return Show.findOne({ tmdbId });
       })) 
     }
     updateShows().then(foundShows => {
@@ -33,20 +34,27 @@ export const listSearchResults = async (req, res) => {
   }
 }
   
-
-export const addShow = (req, res) => {
+export const addShow = async (req, res) => {
   console.log(req.body);
   const { tmdbId, name, poster, firstAirDate, overview, genreIds } = req.body;
 
-  // genreIds.map(id => {
+  const newShow = new Show({
+    tmdbId,
+    name,
+    poster,
+    firstAirDate,
+    overview
+  });
 
-  // })
+  const findGenres = async() => {
+    return Promise.all(genreIds.map(tmdbId => Genre.findOne({ tmdbId })));
+  }
 
-  Promise.all([Show.findOne({ tmdbId }).exec()]);
- 
-  
-  // Show.create(req, (err, show) => {
-  //   if (err) return console.log(err);
-  //   res.json(show);
-  // })
+  findGenres().then(genres => {
+    genres.forEach((genre: IGenre) => {
+      newShow.genres.push(genre);
+    })
+
+    newShow.save();
+  })
 }
