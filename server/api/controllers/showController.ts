@@ -1,6 +1,8 @@
 import Show from '../models/Show';
 import axios, { AxiosResponse, AxiosError } from 'axios';
 import Genre, { IGenre } from '../models/Genre';
+import Actor, { IActor } from '../models/Actor';
+import Character from '../models/Character';
 
 export const listSearchResults = async (req, res) => {
   let query = JSON.parse(req.query.values).name;
@@ -50,11 +52,46 @@ export const addShow = async (req, res) => {
     return Promise.all(genreIds.map(tmdbId => Genre.findOne({ tmdbId })));
   }
 
-  findGenres().then(genres => {
-    genres.forEach((genre: IGenre) => {
-      newShow.genres.push(genre);
-    })
+  let actors;
 
-    newShow.save();
-  })
+  const fetchActors = async() => {
+    const response = await axios.get(
+      `https://api.themoviedb.org/3/tv/${tmdbId}/credits?api_key=${process.env.REACT_APP_TMDB_API_KEY}&language=en-US`
+    );
+
+    actors = response.data["cast"];
+
+    return Promise.all(actors.map(actor => Actor.findOne({ tmdbId: actor["id"] })))
+  }
+
+  fetchActors()
+  .then(foundActors => {
+    foundActors.forEach((actor, index)=> {
+      let newCharacter = new Character();
+      newCharacter.name = actors[index]["character"];
+      if (actor === null) {
+        let newActor = new Actor();
+        newActor.tmdbId = actors[index]["id"]; 
+        newActor.name = actors[index]["name"];
+        newActor.poster = actors[index]["profile_path"];
+        newActor.characters.push(newCharacter);
+        newCharacter.save();
+        newShow.characters.push(newCharacter);
+        newActor.save();
+      } else {
+        newCharacter.actor = actor as IActor;
+        newCharacter.save();
+        newShow.characters.push(newCharacter);
+      }
+    })})
+    .then(() => {
+      // TODO: fix running and placement of this function. Genres not being added.
+      findGenres().then((genres) => {
+        genres.forEach((genre: IGenre) => {
+          newShow.genres.push(genre);
+        });
+      });
+        newShow.save();
+        res.json(newShow);
+    })
 }

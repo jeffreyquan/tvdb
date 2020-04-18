@@ -25,7 +25,7 @@ export interface IActor extends mongoose.Document {
   tmdbId: number;
   name: string;
   poster: string;
-  character: ICharacter[]
+  characters: ICharacter[]
 }
 
 const Actor = mongoose.model<IActor>("Actor", ActorSchema);
