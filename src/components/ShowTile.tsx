@@ -1,5 +1,6 @@
 import React from 'react';
 import axios from 'axios';
+import { Button } from '@material-ui/core';
 
 interface ShowTileProps {
   tmdbId: number;
@@ -8,9 +9,10 @@ interface ShowTileProps {
   firstAirDate: number;
   overview?: string;
   poster?: string;
+  added: boolean;
 }
 
-export const ShowTile: React.FC<ShowTileProps> = ({ tmdbId, name, genreIds, firstAirDate, overview, poster}) => {
+export const ShowTile: React.FC<ShowTileProps> = ({ tmdbId, name, genreIds, firstAirDate, overview, poster, added}) => {
 
   const data = {
     tmdbId,
@@ -33,7 +35,11 @@ export const ShowTile: React.FC<ShowTileProps> = ({ tmdbId, name, genreIds, firs
     <>
       <div>{ name }</div>
       <img src={`https://image.tmdb.org/t/p/w188_and_h282_bestv2${ poster }`} alt={ name } />
-      <button type="button" onClick={addShow}>Add</button>
+      {added ?
+        <Button variant="contained" color="secondary">Added</Button>
+        :
+        <Button variant="contained" type="button" color="primary" onClick={addShow}>Add</Button>
+      }
     </>
   )
 }
