@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+import { IShow } from './Show';
 
 const { Schema } = mongoose;
 
@@ -14,6 +15,12 @@ const GenreSchema = new Schema({
   shows: [{ type: Schema.Types.ObjectId, ref: 'Show' }]
 }, { collection: 'genre' })
 
-const Genre = mongoose.model('Genre', GenreSchema);
+export interface IGenre extends mongoose.Document {
+  tmdbId: number;
+  name: string;
+  shows: IShow[]
+}
+
+const Genre = mongoose.model<IGenre>('Genre', GenreSchema);
 
 export default Genre;

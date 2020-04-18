@@ -1,4 +1,6 @@
 import mongoose from "mongoose";
+import { IActor } from "./Actor";
+import { IShow } from "./Show";
 
 const { Schema } = mongoose;
 
@@ -19,6 +21,12 @@ const CharacterSchema = new Schema(
   { collection: "character" }
 );
 
-const Character = mongoose.model("Character", CharacterSchema);
+export interface ICharacter extends mongoose.Document {
+  name: string;
+  actor: IActor;
+  show: IShow;
+}
+
+const Character = mongoose.model<ICharacter>("Character", CharacterSchema);
 
 export default Character;
