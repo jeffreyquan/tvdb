@@ -70,39 +70,33 @@ export const addShow = async (req, res) => {
     ])
   }
 
-  fetchGenresAndActors().then(res => {
-    console.log(res);
+  fetchGenresAndActors().then(data => {
+    data[0].forEach((genre: IGenre) => {
+      newShow.genres.push(genre);
+      genre.shows.push(newShow);
+      genre.save();
+    });
+
+    data[1].forEach((actor, index) => {
+      let newCharacter = new Character();
+      newCharacter.name = actors[index]["character"];
+      if (actor === null) {
+        let newActor = new Actor();
+        newActor.tmdbId = actors[index]["id"]; 
+        newActor.name = actors[index]["name"];
+        newActor.poster = actors[index]["profile_path"];
+        newActor.characters.push(newCharacter);
+        newCharacter.save();
+        newShow.characters.push(newCharacter);
+        newActor.save();
+      } else {
+        newCharacter.actor = actor as IActor;
+        newCharacter.save();
+        newShow.characters.push(newCharacter);
+      }
+    })
+
+    newShow.save();
+    res.json(newShow);
   })
-
-  // findGenres().then((genres) => {
-  //   genres.forEach((genre: IGenre) => {
-  //     newShow.genres.push(genre);
-  //   });
-  // });
-
-  // fetchActors()
-  // .then(foundActors => {
-  //   foundActors.forEach((actor, index)=> {
-  //     let newCharacter = new Character();
-  //     newCharacter.name = actors[index]["character"];
-  //     if (actor === null) {
-  //       let newActor = new Actor();
-  //       newActor.tmdbId = actors[index]["id"]; 
-  //       newActor.name = actors[index]["name"];
-  //       newActor.poster = actors[index]["profile_path"];
-  //       newActor.characters.push(newCharacter);
-  //       newCharacter.save();
-  //       newShow.characters.push(newCharacter);
-  //       newActor.save();
-  //     } else {
-  //       newCharacter.actor = actor as IActor;
-  //       newCharacter.save();
-  //       newShow.characters.push(newCharacter);
-  //     }
-  //   })})
-  //   .then(() => {
-  //     // TODO: fix running and placement of this function. Genres not being added.
-  //       newShow.save();
-  //       res.json(newShow);
-  //   })
 }
