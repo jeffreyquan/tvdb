@@ -64,34 +64,45 @@ export const addShow = async (req, res) => {
     return Promise.all(actors.map(actor => Actor.findOne({ tmdbId: actor["id"] })))
   }
 
-  fetchActors()
-  .then(foundActors => {
-    foundActors.forEach((actor, index)=> {
-      let newCharacter = new Character();
-      newCharacter.name = actors[index]["character"];
-      if (actor === null) {
-        let newActor = new Actor();
-        newActor.tmdbId = actors[index]["id"]; 
-        newActor.name = actors[index]["name"];
-        newActor.poster = actors[index]["profile_path"];
-        newActor.characters.push(newCharacter);
-        newCharacter.save();
-        newShow.characters.push(newCharacter);
-        newActor.save();
-      } else {
-        newCharacter.actor = actor as IActor;
-        newCharacter.save();
-        newShow.characters.push(newCharacter);
-      }
-    })})
-    .then(() => {
-      // TODO: fix running and placement of this function. Genres not being added.
-      findGenres().then((genres) => {
-        genres.forEach((genre: IGenre) => {
-          newShow.genres.push(genre);
-        });
-      });
-        newShow.save();
-        res.json(newShow);
-    })
+  const fetchGenresAndActors = () => {
+    return Promise.all([
+      findGenres(), fetchActors()
+    ])
+  }
+
+  fetchGenresAndActors().then(res => {
+    console.log(res);
+  })
+
+  // findGenres().then((genres) => {
+  //   genres.forEach((genre: IGenre) => {
+  //     newShow.genres.push(genre);
+  //   });
+  // });
+
+  // fetchActors()
+  // .then(foundActors => {
+  //   foundActors.forEach((actor, index)=> {
+  //     let newCharacter = new Character();
+  //     newCharacter.name = actors[index]["character"];
+  //     if (actor === null) {
+  //       let newActor = new Actor();
+  //       newActor.tmdbId = actors[index]["id"]; 
+  //       newActor.name = actors[index]["name"];
+  //       newActor.poster = actors[index]["profile_path"];
+  //       newActor.characters.push(newCharacter);
+  //       newCharacter.save();
+  //       newShow.characters.push(newCharacter);
+  //       newActor.save();
+  //     } else {
+  //       newCharacter.actor = actor as IActor;
+  //       newCharacter.save();
+  //       newShow.characters.push(newCharacter);
+  //     }
+  //   })})
+  //   .then(() => {
+  //     // TODO: fix running and placement of this function. Genres not being added.
+  //       newShow.save();
+  //       res.json(newShow);
+  //   })
 }
