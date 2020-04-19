@@ -4,14 +4,14 @@ import {
   Switch,
   Route,
 } from 'react-router-dom';
-import { ShowSearchPage } from './pages/ShowSearchPage';
+import { ShowSearch } from './pages/ShowSearch';
 
 function App() {
   return (
     <Router>
       <Switch>
         <Route path="/">
-          <ShowSearchPage />
+          <ShowSearch />
         </Route>
       </Switch>
     </Router>
