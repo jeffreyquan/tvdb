@@ -100,3 +100,8 @@ export const addShow = async (req, res) => {
     res.json(newShow);
   })
 }
+
+export const fetchAllShows = async(req, res) => {
+  const shows = await Show.find({}).populate('genres').populate('characters').exec();
+  res.json(shows);
+}
