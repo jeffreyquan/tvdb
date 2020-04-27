@@ -7,6 +7,7 @@ import {
 } from 'react-router-dom';
 import { ShowSearch } from './pages/ShowSearch';
 import { Shows } from './pages/Shows';
+import { Show } from './pages/Show';
 
 function App() {
   return (
@@ -16,6 +17,7 @@ function App() {
         <Route path="/search">
           <ShowSearch />
         </Route>
+        <Route path="/show/:id" component={Show}/>
         <Route exact path="/">
           <Shows />
         </Route>
