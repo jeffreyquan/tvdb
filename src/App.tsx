@@ -8,11 +8,14 @@ import {
 import { ShowSearch } from './pages/ShowSearch';
 import { Shows } from './pages/Shows';
 import { Show } from './pages/Show';
+import { Header } from './components/Header';
 
 function App() {
   return (
     <Router>
-      <Link to="/">Home</Link>
+      <Header link="/">
+        Home
+      </Header>
       <Switch>
         <Route path="/search">
           <ShowSearch />
